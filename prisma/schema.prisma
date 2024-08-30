@@ -9,23 +9,24 @@ datasource db {
 }
 
 model User {
-  id        String   @id
+  id        String    @id @default(uuid())
   name      String
-  email     String   @unique(map: "User_email_key")
-  createdAt DateTime @default(now())
-  updatedAt DateTime
+  email     String    @unique(map: "User_email_key")
+  createdAt DateTime? @default(now())
+  updatedAt DateTime?
   password  String
   image     String?
+}
 
-  Log Log[]
+model Profile {
+  id   Int    @id
+  type String @unique
 }
 
 model Log {
-  id          String   @id @unique
+  id          String   @id @default(uuid())
   description String
   category    Int?
   createdAt   DateTime @default(now())
-
   userId      String?
-  user        User?    @relation(fields: [userId], references: [id])
 }
