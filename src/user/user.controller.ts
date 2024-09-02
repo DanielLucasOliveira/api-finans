@@ -8,20 +8,19 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/CreateUser.dto';
-import { UserLoginDTO } from './dto/UserLogin.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('login')
-  async login(@Body(new ValidationPipe()) credentials: UserLoginDTO) {
-    if (credentials) return await this.userService.login(credentials);
+  @Get('login/:id')
+  async login(@Param('id', ValidationPipe) id: string) {
+    if (id) return await this.userService.login(id);
   }
 
   @Post()
   async create(@Body(new ValidationPipe()) user: CreateUserDTO) {
-    await this.userService.create(user);
+    return await this.userService.create(user);
   }
 
   @Get('email/:email')
