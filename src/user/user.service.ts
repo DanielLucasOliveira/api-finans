@@ -2,7 +2,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDTO } from './dto/CreateUser.dto';
 import * as bcrypt from 'bcryptjs';
-import { UserLoginDTO } from './dto/UserLogin.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -27,11 +26,20 @@ export class UserService {
       },
     });
 
+    if (user) {
+      await this.prisma.log.create({
+        data: {
+          category: 2,
+          userId: user.id,
+          description: `User ${user.name} logged in`,
+        },
+      });
+    }
+
     return user;
   }
 
   async create(user: CreateUserDTO) {
-    // Hash da senha antes de salvar
     const hashedPassword = await bcrypt.hash(user.password, 13);
 
     const createdUser = await this.prisma.user.create({
